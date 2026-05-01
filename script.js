@@ -1,9 +1,6 @@
-// Tambahkan ini di bagian paling atas downloadBtn.addEventListener('click', ...
-const music = document.getElementById('bgMusic');
-if (music.paused) {
-    music.volume = 0.3; // Set volume 30% agar tidak kaget
-    music.play();
-}
+/* =========================================
+   NEXORA CORE SCRIPT - PRO V3
+   ========================================= */
 
 // --- CONFIG FIREBASE ---
 const firebaseConfig = {
@@ -19,51 +16,47 @@ const firebaseConfig = {
 // Inisialisasi Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
-const installRef = database.ref('total_installs');
 
-// --- KONFIGURASI BOT TELEGRAM (Sudah Diisi) ---
-const TELEGRAM_BOT_TOKEN = "8656411338:AAHCKBjZJzf_i4AMOOW2sHCK_IdIlTkZMY4"; 
-const TELEGRAM_CHAT_ID = "2044673218"; 
+// Struktur Folder Website
+const websiteRef = database.ref('website/data');
+const installRef = websiteRef.child('total_installs');
+const maintenanceRef = database.ref('website/settings/maintenance');
 
-let currentTotalInstalls = 0;
+// --- 1. SYSTEM MAINTENANCE (Realtime) ---
+maintenanceRef.on('value', (snapshot) => {
+    const isMaintenance = snapshot.val();
+    if (isMaintenance === true) {
+        document.body.innerHTML = `
+            <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#080808; color:white; font-family:'Fira Code',monospace; text-align:center; padding:20px;">
+                <h1 style="text-shadow:0 0 20px #fff; font-size:2rem;">SYSTEM UNDER MAINTENANCE</h1>
+                <p style="color:#555; margin-top:15px; letter-spacing:1px;">> Nexora Protocol is updating. Access denied.</p>
+                <div class="blink" style="margin-top:30px; color:#ff3333; font-weight:bold;">[ STATUS: OFFLINE ]</div>
+            </div>
+        `;
+    }
+});
 
-// --- 1. AMBIL DATA REALTIME DARI FIREBASE ---
+// --- 2. AMBIL DATA INSTALLS (Folder Website) ---
 installRef.on('value', (snapshot) => {
     const data = snapshot.val();
     const installCountElement = document.getElementById('installCount');
     if (data !== null) {
-        currentTotalInstalls = data;
         installCountElement.innerText = data.toLocaleString('id-ID');
     } else {
-        installRef.set(1500); 
+        installRef.set(0); // Nilai awal jika database kosong
     }
 });
 
-// --- 2. FITUR BACA UKURAN FILE (Perbaikan Bug 0.00MB) ---
-async function fetchFileSize() {
-    const sizeElement = document.getElementById('fileSize');
-    try {
-        const response = await fetch('Nexora.apk', { method: 'HEAD' });
-        const bytes = response.headers.get('content-length');
-        
-        if (bytes && bytes > 0) {
-            const mb = bytes / (1024 * 1024);
-            sizeElement.innerText = mb.toFixed(2) + " MB";
-        } else {
-            sizeElement.innerText = "24.50 MB"; // Fallback jika size tdk terbaca
-        }
-    } catch (e) { 
-        sizeElement.innerText = "24.50 MB"; 
-    }
-}
+// --- 3. TELEGRAM NOTIFIER ---
+const TELEGRAM_BOT_TOKEN = "8656411338:AAHCKBjZJzf_i4AMOOW2sHCK_IdIlTkZMY4"; 
+const TELEGRAM_CHAT_ID = "2044673218"; 
 
-// --- 3. TELEGRAM NOTIFIER (Dengan Info Total Install) ---
 function sendTelegramAlert(newTotal) {
     const time = new Date().toLocaleString('id-ID');
-    const msg = `🚨 *NEXORA NOTIFICATION*\n\n` +
+    const msg = ` *NEXORA NOTIFICATION*\n\n` +
                 `Target baru saja mengunduh APK!\n` +
-                `🕒 Waktu: ${time}\n` +
-                `📊 Total Installs Sekarang: *${newTotal}*`;
+                ` Waktu: ${time}\n` +
+                ` Total Installs: *${newTotal}*`;
     
     fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
@@ -76,55 +69,79 @@ function sendTelegramAlert(newTotal) {
     });
 }
 
-// --- 4. LOGIK TOMBOL DOWNLOAD ---
+// --- 4. LOGIKA TOMBOL DOWNLOAD & ANIMASI ---
 const downloadBtn = document.getElementById('downloadBtn');
 const btnText = document.querySelector('.btn-text');
 const btnProgress = document.querySelector('.btn-progress');
 
 downloadBtn.addEventListener('click', function(e) {
-    if (downloadBtn.classList.contains('loading')) {
-        e.preventDefault(); 
-        return;
+    e.preventDefault();
+    const music = document.getElementById('bgMusic');
+    const apkUrl = this.getAttribute('href');
+
+    if (this.classList.contains('loading')) return;
+
+    // Music Trigger
+    if (music && music.paused) {
+        music.volume = 0.3;
+        music.play();
     }
-    
-    downloadBtn.classList.add('loading');
+
+    this.classList.add('loading');
     btnText.innerText = "BYPASSING SECURITY...";
     
     let width = 0;
     const interval = setInterval(() => {
-        width += Math.random() * 12;
+        width += Math.random() * 12; // Animasi progress
         if (width >= 100) {
             width = 100;
             clearInterval(interval);
             
-            btnText.innerText = "DOWNLOAD STARTED";
+            btnText.innerText = "ACCESS GRANTED";
             
-            // UPDATE DATABASE & KIRIM NOTIF
+            // Transaction Firebase (Update +1)
             installRef.transaction((currentValue) => {
                 const updatedValue = (currentValue || 0) + 1;
-                // Kirim notif dengan angka terbaru
                 sendTelegramAlert(updatedValue);
                 return updatedValue;
             });
 
+            // Jalankan Download APK
             setTimeout(() => {
-                btnText.innerText = "INITIALIZE DOWNLOAD";
+                window.location.href = apkUrl;
+            }, 800);
+
+            // Reset Tombol
+            setTimeout(() => {
+                this.classList.remove('loading');
+                btnText.innerText = "EXECUTE INSTALLATION";
                 btnProgress.style.width = "0%";
-                downloadBtn.classList.remove('loading');
-            }, 3000);
+            }, 4000);
         }
         btnProgress.style.width = width + '%';
-    }, 150);
+    }, 100);
 });
 
-// Typewriter
+// --- 5. EKSTRA (Typewriter & File Size) ---
 const typeText = "> Initializing Nexora Secure Protocol...";
 let typeIndex = 0;
 function typeWriter() {
-    if (typeIndex < typeText.length) {
-        document.getElementById("typewriter").innerHTML += typeText.charAt(typeIndex);
+    const el = document.getElementById("typewriter");
+    if (el && typeIndex < typeText.length) {
+        el.innerHTML += typeText.charAt(typeIndex);
         typeIndex++; 
         setTimeout(typeWriter, 40);
+    }
+}
+
+async function fetchFileSize() {
+    const sizeElement = document.getElementById('fileSize');
+    try {
+        const response = await fetch('Nexora.apk', { method: 'HEAD' });
+        const bytes = response.headers.get('content-length');
+        sizeElement.innerText = bytes ? (bytes / (1024 * 1024)).toFixed(2) + " MB" : "24.50 MB";
+    } catch (e) { 
+        sizeElement.innerText = "24.50 MB"; 
     }
 }
 
