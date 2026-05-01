@@ -1,0 +1,288 @@
+:root {
+    --bg-base: #080808;
+    --bg-card: #121212;
+    --border-color: #2a2a2a;
+    --text-pure: #ffffff;
+    --text-muted: #888888;
+    --text-dark: #000000;
+    --accent-gray: #e0e0e0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Mengubah overflow agar di HP bisa di-scroll kalau butuh */
+    overflow-y: auto; 
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background Effects */
+.grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 1;
+}
+
+.noise-overlay {
+    position: absolute;
+    inset: 0;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.15;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 40px 0; /* Memberi jarak atas bawah */
+}
+
+/* Header & Typography */
+header { text-align: center; }
+
+.logo-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    color: var(--text-pure);
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+}
+
+.badge {
+    background: var(--text-pure);
+    color: var(--text-dark);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    font-weight: 600;
+    border-radius: 2px;
+}
+
+.subtitle {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    height: 20px; 
+}
+
+/* Main UI Card */
+.ui-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+}
+
+.card-header {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.02);
+}
+
+.controls {
+    display: flex;
+    gap: 6px;
+}
+
+.controls span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #333;
+}
+
+.title-bar {
+    flex-grow: 1;
+    text-align: center;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* Info Rows */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    border-bottom: 1px dashed #222;
+    padding-bottom: 8px;
+}
+
+.label { color: #555; }
+.value { color: var(--accent-gray); }
+.white { color: var(--text-pure); font-weight: 600; }
+.blink { animation: blinker 1.5s linear infinite; color: var(--text-pure); }
+
+@keyframes blinker {
+    50% { opacity: 0.3; }
+}
+
+/* Modern Button */
+.action-area {
+    margin-top: 30px;
+}
+
+.btn-primary {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    border: 1px solid var(--text-muted);
+    color: var(--text-pure);
+    text-decoration: none;
+    text-align: center;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    border-color: var(--text-pure);
+    box-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-text {
+    position: relative;
+    z-index: 2;
+}
+
+.btn-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: var(--text-pure);
+    z-index: 1;
+    transition: width 0.1s linear;
+}
+
+.btn-primary.loading .btn-text {
+    color: var(--text-dark);
+}
+
+footer {
+    text-align: center;
+    font-size: 0.7rem;
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 1px;
+}
+
+/* ======================================================== */
+/* --- RESPONSIVE DESIGN (HP/MOBILE OPTIMIZATION) ---       */
+/* ======================================================== */
+
+@media (max-width: 600px) {
+    body {
+        align-items: flex-start; /* Mengubah posisi ke atas supaya tidak terpotong */
+    }
+
+    .container {
+        width: 100%;
+        gap: 20px;
+        padding: 40px 20px;
+    }
+
+    h1 {
+        font-size: 2rem; 
+        letter-spacing: 2px;
+    }
+
+    .logo-wrapper {
+        flex-direction: column; 
+        gap: 5px;
+    }
+
+    .badge {
+        font-size: 0.6rem;
+    }
+
+    .subtitle {
+        font-size: 0.75rem;
+    }
+
+    .card-body {
+        padding: 20px 15px; 
+    }
+
+    .info-row {
+        font-size: 0.75rem; 
+    }
+
+    .title-bar {
+        font-size: 0.65rem;
+    }
+
+    .btn-primary {
+        padding: 14px;
+        font-size: 0.8rem;
+    }
+
+    footer {
+        font-size: 0.6rem;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 350px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    .info-row {
+        flex-direction: column; 
+        gap: 4px;
+        border-bottom: none;
+        margin-bottom: 12px;
+    }
+    
+    .label {
+        font-size: 0.65rem;
+    }
+}
