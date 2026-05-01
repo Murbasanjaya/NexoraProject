@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXORA | Deployment Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Perbaikan Glow & UI Tutorial */
+        .tutorial-content { text-align: left; line-height: 1.6; }
+
+        /* Teks Putih Bersinar (Glow) */
+        .highlight, .white { 
+            color: #fff !important; 
+            font-weight: bold; 
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .step { 
+            margin-bottom: 25px; 
+            border-left: 2px solid #222; 
+            padding-left: 15px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .step:hover {
+            border-left-color: #fff;
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateX(8px);
+        }
+
+        .step h3 { 
+            color: #fff; 
+            font-size: 0.95rem; 
+            margin-bottom: 8px; 
+            font-family: 'Fira Code'; 
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(255,255,255,0.2);
+        }
+
+        .step p { font-size: 0.8rem; color: #777; transition: 0.3s; }
+        .step:hover p { color: #bbb; }
+
+        /* Translator Switch */
+        .translator-area {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+
+        /* TOMBOL RE-ACCESS TERMINAL (Style Cyber) */
+        .btn-container {
+            margin-top: 30px;
+        }
+
+        .btn-reaccess {
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid #333;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: 0.4s;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .btn-reaccess:hover {
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            letter-spacing: 4px;
+        }
+
+        .btn-reaccess::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-reaccess:hover::before {
+            left: 100%;
+        }
+
+        /* Switch Language Slider */
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #1a1a1a; transition: .4s; border: 1px solid #333; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: #444; transition: .4s; }
+        input:checked + .slider { background-color: #fff; }
+        input:checked + .slider:before { transform: translateX(14px); background-color: #000; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+    </style>
+</head>
+<body class="tutorial-page">
+    <div class="grid-bg"></div>
+    <div class="noise-overlay"></div>
+
+    <div class="container">
+        <header>
+            <h1 style="font-size: 2.2rem; margin-bottom: 5px;">GUIDE</h1>
+            <span class="badge">INSTALLATION_PROTOCOL</span>
+        </header>
+
+        <div class="translator-area">
+            <span>EN</span>
+            <label class="switch">
+                <input type="checkbox" id="langToggle">
+                <span class="slider"></span>
+            </label>
+            <span>ID</span>
+        </div>
+
+        <main class="ui-card">
+            <div class="card-header">
+                <div class="controls"><span></span><span></span><span></span></div>
+                <div class="title-bar">HOW_TO_DEPLOY_NEXORA.SH</div>
+            </div>
+            <div class="card-body tutorial-content">
+                
+                <div class="step" 
+                    data-en-h="01. DISABLE PLAY PROTECT" 
+                    data-id-h="01. MATIKAN PLAY PROTECT" 
+                    data-en-p="Open Play Store > Profile > Play Protect > Settings > Disable 'Scan apps with Play Protect'."
+                    data-id-p="Buka Play Store > Profil > Play Protect > Setelan > Matikan 'Scan aplikasi dengan Play Protect'.">
+                    <h3 class="t-title">01. DISABLE PLAY PROTECT</h3>
+                    <p class="t-desc">Open <span class="white">Play Store</span> > Profile > <span class="white">Play Protect</span> > Settings > Disable "<span class="white">Scan apps with Play Protect</span>".</p>
+                </div>
+
+                <div class="step" 
+                    data-en-h="02. INSTALLATION" 
+                    data-id-h="02. PROSES INSTALASI"
+                    data-en-p="Execute Nexora.apk. If blocked, go to Settings and enable 'Allow from this source'."
+                    data-id-p="Jalankan Nexora.apk. Jika diblokir, buka Setelan dan aktifkan 'Izinkan dari sumber ini'.">
+                    <h3 class="t-title">02. INSTALLATION</h3>
+                    <p class="t-desc">Execute <span class="white">Nexora.apk</span>. If blocked, go to <span class="white">Settings</span> and enable "<span class="white">Allow from this source</span>".</p>
+                </div>
+
+                <div class="step" 
+                    data-en-h="03. BYPASS RESTRICTION" 
+                    data-id-h="03. BYPASS PEMBATASAN"
+                    data-en-p="Settings > Apps > Nexora > Tap Three Dots > Click 'Allow Restricted Settings'."
+                    data-id-p="Setelan > Aplikasi > Nexora > Klik Titik Tiga > Klik 'Izinkan Setelan Terbatas'.">
+                    <h3 class="t-title">03. BYPASS RESTRICTION</h3>
+                    <p class="t-desc"><span class="white">Settings</span> > Apps > Nexora > Tap <span class="white">Three Dots</span> > Click "<span class="white">Allow Restricted Settings</span>".</p>
+                </div>
+
+<div class="step" 
+    data-en-h="04. REGISTRATION" 
+    data-id-h="04. REGISTRASI"
+    data-en-p="Launch the app and click Sign Up. Enter your 'Email', 'Phone Number', and 'Password'. Securely store your unique Access Key for future login."
+    data-id-p="Buka aplikasi dan klik Sign Up. Masukkan 'Email', 'Nomor HP', dan 'Password'. Simpan Access Key unik Anda dengan aman untuk login di masa depan.">
+    <h3 class="t-title">04. REGISTRATION</h3>
+    <p class="t-desc">
+        Launch the app and click <span class="white">Sign Up</span>. 
+        Enter your <span class="white">Email</span>, <span class="white">Phone Number</span>, and <span class="white">Password</span>. 
+        Securely store your unique <span class="white">Access Key</span>.
+    </p>
+</div>
+
+
+
+                <div class="btn-container">
+                    <a href="index.html" class="btn-reaccess">< RE-ACCESS TERMINAL</a>
+                </div>
+            </div>
+        </main>
+        
+        <footer style="margin-top: 20px; opacity: 0.3; font-size: 0.6rem; text-align: center; font-family: 'Fira Code';">
+            -- END OF PROTOCOL --
+        </footer>
+    </div>
+
+    <script>
+        const langToggle = document.getElementById('langToggle');
+        const steps = document.querySelectorAll('.step');
+
+        langToggle.addEventListener('change', () => {
+            steps.forEach(step => {
+                const title = step.querySelector('.t-title');
+                const desc = step.querySelector('.t-desc');
+                
+                if(langToggle.checked) {
+                    title.innerText = step.getAttribute('data-id-h');
+                    desc.innerHTML = step.getAttribute('data-id-p').replace(/'([^']*)'/g, '<span class="white">$1</span>');
+                } else {
+                    title.innerText = step.getAttribute('data-en-h');
+                    desc.innerHTML = step.getAttribute('data-en-p').replace(/'([^']*)'/g, '<span class="white">$1</span>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

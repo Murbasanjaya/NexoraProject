@@ -1,3 +1,39 @@
+/* =========================================
+   NEXORA CORE THEME - ULTIMATE EDITION
+   ========================================= */
+   .btn-primary {
+    position: relative;
+    overflow: hidden; /* Wajib agar bar tidak keluar kotak */
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.btn-text {
+    position: relative;
+    z-index: 5; /* Teks harus di atas bar */
+    transition: all 0.3s ease;
+}
+
+.btn-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%; /* Mulai dari nol */
+    background: #ffffff; /* Bar putih */
+    z-index: 2;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    transition: width 0.2s linear;
+}
+
+/* KETIKA TOMBOL DIPENCET (LOADING) */
+.btn-primary.loading .btn-text {
+    color: #000000 !important; /* Teks jadi hitam agar kontras dengan bar putih */
+    text-shadow: none !important; /* Glow ilang pas teks item */
+    font-weight: 800;
+}
+
+
 :root {
     --bg-base: #080808;
     --bg-card: #121212;
@@ -6,12 +42,19 @@
     --text-muted: #888888;
     --text-dark: #000000;
     --accent-gray: #e0e0e0;
+    --glitch-speed: 3s;
+    
+    /* Neon Glow System */
+    --glow-text: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.3);
+    --glow-strong: 0 0 12px rgba(255, 255, 255, 0.9), 0 0 25px rgba(255, 255, 255, 0.4);
 }
 
+/* --- 1. RESET & BASE --- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -22,267 +65,243 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Mengubah overflow agar di HP bisa di-scroll kalau butuh */
-    overflow-y: auto; 
     overflow-x: hidden;
-    position: relative;
+    transition: opacity 0.5s ease;
 }
 
-/* Background Effects */
+body.fade-out { opacity: 0; }
+
+/* --- 2. SEMUA TEKS PUTIH GLOW (OTOMATIS) --- */
+.white, .highlight, h1, .badge, .t-title, .step-num, .btn-reaccess, .btn-primary, .step h3 {
+    color: #ffffff !important;
+    text-shadow: var(--glow-text);
+}
+
+/* --- 3. BACKGROUND EFFECTS --- */
 .grid-bg {
-    position: absolute;
+    position: fixed;
     inset: 0;
     background-image: 
-        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: 1;
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 45px 45px;
+    z-index: -2;
 }
 
 .noise-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
     background: url('https://grainy-gradients.vercel.app/noise.svg');
-    opacity: 0.15;
-    z-index: 2;
+    opacity: 0.12;
+    z-index: -1;
     pointer-events: none;
 }
 
+/* --- 4. ANIMATION KEYFRAMES --- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes glitch {
+    0%, 100% { text-shadow: var(--glow-text); }
+    2% { text-shadow: 2px 0px 0px #fff, -2px 0px 0px #888, var(--glow-strong); }
+    4% { text-shadow: var(--glow-text); }
+}
+
+@keyframes pulseLogo {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px #fff); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 15px #fff); }
+}
+
+@keyframes blinker { 50% { opacity: 0.2; } }
+
+/* --- 5. MAIN LAYOUT & HEADER --- */
 .container {
     position: relative;
-    z-index: 10;
     width: 90%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 40px 0; /* Memberi jarak atas bawah */
+    max-width: 480px;
+    padding: 20px 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Header & Typography */
-header { text-align: center; }
-
-.logo-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 10px;
-}
+header { text-align: center; margin-bottom: 30px; }
 
 h1 {
-    color: var(--text-pure);
     font-size: 3rem;
-    font-weight: 700;
-    letter-spacing: 4px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    animation: glitch var(--glitch-speed) infinite;
+    text-shadow: var(--glow-strong);
+}
+
+.main-logo {
+    color: var(--text-pure);
+    margin-bottom: 10px;
+    animation: pulseLogo 2s infinite ease-in-out;
 }
 
 .badge {
-    background: var(--text-pure);
-    color: var(--text-dark);
+    background: #ffffff !important; /* Putih pekat */
+    color: #000000 !important;    /* Hitam pekat agar kontras */
     font-family: 'Fira Code', monospace;
-    font-size: 0.7rem;
-    padding: 4px 8px;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 5px 12px;
     border-radius: 2px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); /* Glow di luarnya saja */
+    text-shadow: none !important; /* HAPUS GLOW PADA TEKS HITAM */
+    display: inline-block;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
-.subtitle {
-    font-family: 'Fira Code', monospace;
-    font-size: 0.9rem;
-    height: 20px; 
-}
 
-/* Main UI Card */
+/* --- 6. TERMINAL CARD UI --- */
 .ui-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    border-radius: 12px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+    overflow: hidden;
     backdrop-filter: blur(10px);
 }
 
 .card-header {
-    padding: 12px 15px;
+    padding: 12px 18px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     background: rgba(255,255,255,0.02);
 }
 
-.controls {
-    display: flex;
-    gap: 6px;
+.controls span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #222; margin-right: 5px; }
+
+.title-bar { 
+    flex-grow: 1; text-align: center; font-family: 'Fira Code', monospace; 
+    font-size: 0.7rem; color: #555; letter-spacing: 1px;
 }
 
-.controls span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #333;
-}
+.card-body { padding: 25px 30px; }
 
-.title-bar {
-    flex-grow: 1;
-    text-align: center;
-    font-family: 'Fira Code', monospace;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-.card-body {
-    padding: 30px;
-}
-
-/* Info Rows */
 .info-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
     font-family: 'Fira Code', monospace;
-    font-size: 0.85rem;
-    border-bottom: 1px dashed #222;
-    padding-bottom: 8px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding-bottom: 10px;
 }
 
-.label { color: #555; }
-.value { color: var(--accent-gray); }
-.white { color: var(--text-pure); font-weight: 600; }
-.blink { animation: blinker 1.5s linear infinite; color: var(--text-pure); }
+.blink { animation: blinker 1.5s infinite; color: var(--text-pure); text-shadow: 0 0 10px #fff; }
 
-@keyframes blinker {
-    50% { opacity: 0.3; }
+/* --- 7. TUTORIAL STEPS (FIX PROTOKOL KEDEKATAN) --- */
+.step { 
+    margin-bottom: 40px !important; /* Jarak antar protokol sangat lega */
+    border-left: 2px solid #222; 
+    padding-left: 20px;
+    transition: 0.3s;
 }
 
-/* Modern Button */
-.action-area {
-    margin-top: 30px;
+.step:hover {
+    border-left-color: #fff;
+    background: rgba(255,255,255,0.02);
 }
+
+.step h3 { font-size: 0.95rem; margin-bottom: 12px; letter-spacing: 1px; }
+.step p { font-size: 0.8rem; line-height: 1.6; color: #777; }
+
+/* --- 8. BUTTONS DESIGN --- */
+.action-area { margin-top: 25px; }
 
 .btn-primary {
     position: relative;
     display: block;
     width: 100%;
-    padding: 16px;
+    padding: 18px;
     background: transparent;
-    border: 1px solid var(--text-muted);
-    color: var(--text-pure);
+    border: 1px solid var(--border-color);
     text-decoration: none;
     text-align: center;
     font-family: 'Fira Code', monospace;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: 0.4s;
     cursor: pointer;
 }
 
 .btn-primary:hover {
-    border-color: var(--text-pure);
-    box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    border-color: #fff;
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
 }
 
-.btn-primary:active {
-    transform: scale(0.98);
-}
-
-.btn-text {
-    position: relative;
-    z-index: 2;
-}
-
-.btn-progress {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 0%;
-    background: var(--text-pure);
-    z-index: 1;
-    transition: width 0.1s linear;
-}
-
-.btn-primary.loading .btn-text {
-    color: var(--text-dark);
-}
-
-footer {
+/* VIEW INSTALLATION GUIDE BUTTON (PREMIUM) */
+.guide-link-area {
+    margin-top: 35px;
     text-align: center;
-    font-size: 0.7rem;
+}
+
+.guide-btn {
+    display: inline-block;
+    color: #fff !important;
+    text-decoration: none;
     font-family: 'Fira Code', monospace;
-    letter-spacing: 1px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding: 12px 30px;
+    border: 1px solid #333;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-shadow: var(--glow-text);
+    text-transform: uppercase;
 }
 
-/* ======================================================== */
-/* --- RESPONSIVE DESIGN (HP/MOBILE OPTIMIZATION) ---       */
-/* ======================================================== */
+.guide-btn:hover {
+    border-color: #fff;
+    background: rgba(255,255,255,0.05);
+    letter-spacing: 4px;
+    text-shadow: var(--glow-strong);
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
 
+/* RE-ACCESS TERMINAL (TUTORIAL PAGE) */
+.btn-reaccess {
+    display: block;
+    width: 100%;
+    margin-top: 25px;
+    padding: 16px;
+    background: transparent;
+    border: 1px solid #444;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    transition: 0.4s;
+}
+
+.btn-reaccess:hover {
+    background: #fff;
+    color: #000 !important;
+    text-shadow: none !important;
+}
+
+/* --- 9. MOBILE OPTIMIZATION --- */
 @media (max-width: 600px) {
-    body {
-        align-items: flex-start; /* Mengubah posisi ke atas supaya tidak terpotong */
-    }
-
-    .container {
-        width: 100%;
-        gap: 20px;
-        padding: 40px 20px;
-    }
-
-    h1 {
-        font-size: 2rem; 
-        letter-spacing: 2px;
-    }
-
-    .logo-wrapper {
-        flex-direction: column; 
-        gap: 5px;
-    }
-
-    .badge {
-        font-size: 0.6rem;
-    }
-
-    .subtitle {
-        font-size: 0.75rem;
-    }
-
-    .card-body {
-        padding: 20px 15px; 
-    }
-
-    .info-row {
-        font-size: 0.75rem; 
-    }
-
-    .title-bar {
-        font-size: 0.65rem;
-    }
-
-    .btn-primary {
-        padding: 14px;
-        font-size: 0.8rem;
-    }
-
-    footer {
-        font-size: 0.6rem;
-        margin-top: 10px;
-    }
+    h1 { font-size: 2.3rem; letter-spacing: 4px; }
+    .container { width: 92%; }
+    .card-body { padding: 20px 25px; }
+    .step { margin-bottom: 35px !important; }
 }
 
-@media (max-width: 350px) {
-    h1 {
-        font-size: 1.6rem;
-    }
-    
-    .info-row {
-        flex-direction: column; 
-        gap: 4px;
-        border-bottom: none;
-        margin-bottom: 12px;
-    }
-    
-    .label {
-        font-size: 0.65rem;
-    }
+footer { 
+    text-align: center; 
+    margin-top: 40px; 
+    font-size: 0.6rem; 
+    font-family: 'Fira Code'; 
+    opacity: 0.3; 
+    letter-spacing: 1px;
 }
