@@ -3,12 +3,35 @@
    ========================================= */
 const music = document.getElementById('bgMusic');
 
-document.addEventListener('click', () => {
-    if (music && music.paused) {
-        music.volume = 0.3;
-        music.play();
+// Function untuk sinkronisasi musik
+function syncMusic() {
+    const savedTime = localStorage.getItem('musicTime');
+    const isPlaying = localStorage.getItem('musicPlaying');
+
+    if (savedTime) {
+        music.currentTime = parseFloat(savedTime);
     }
-}, { once: true }); // 'once: true' artinya hanya dijalankan sekali klik saja
+
+    if (isPlaying === 'true') {
+        music.play().catch(() => {
+            // Browser biasanya blokir autoplay, tunggu klik user
+            document.addEventListener('click', () => music.play(), { once: true });
+        });
+    }
+}
+
+// Simpan posisi musik setiap detik
+setInterval(() => {
+    if (!music.paused) {
+        localStorage.setItem('musicTime', music.currentTime);
+        localStorage.setItem('musicPlaying', 'true');
+    } else {
+        localStorage.setItem('musicPlaying', 'false');
+    }
+}, 1000);
+
+window.addEventListener('load', syncMusic);
+
 
 // --- CONFIG FIREBASE ---
 const firebaseConfig = {
