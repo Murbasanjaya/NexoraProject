@@ -1,6 +1,14 @@
 /* =========================================
    NEXORA CORE SCRIPT - PRO V3
    ========================================= */
+const music = document.getElementById('bgMusic');
+
+document.addEventListener('click', () => {
+    if (music && music.paused) {
+        music.volume = 0.3;
+        music.play();
+    }
+}, { once: true }); // 'once: true' artinya hanya dijalankan sekali klik saja
 
 // --- CONFIG FIREBASE ---
 const firebaseConfig = {
@@ -88,7 +96,7 @@ downloadBtn.addEventListener('click', function(e) {
     }
 
     this.classList.add('loading');
-    btnText.innerText = "BYPASSING SECURITY...";
+    btnText.innerText = "INSTAL...";
     
     let width = 0;
     const interval = setInterval(() => {
