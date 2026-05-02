@@ -102,33 +102,60 @@
         }
 
         /* INPUT BAR */
-        .input-bar-container {
-            padding: 15px; background: #212121;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
+/* --- UPDATE UNTUK RESPONSIVE INPUT --- */
 
-        .input-bar {
-            display: flex; align-items: center; gap: 10px;
-            background: #1a1a1a; padding: 5px 15px;
-            border-radius: 25px; border: 1px solid #333;
-        }
+.input-bar-container {
+    padding: clamp(10px, 3vw, 20px); /* Padding mengecil di layar kecil */
+    background: #212121;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-        .input-bar input[type="text"] {
-            flex: 1; background: transparent; border: none;
-            color: #fff; padding: 10px 0; outline: none; font-size: 0.9rem;
-        }
+.input-bar {
+    display: flex; 
+    align-items: center; 
+    gap: 2vw; /* Jarak antar elemen ikut mengecil */
+    background: #1a1a1a; 
+    padding: 1vw 4vw; /* Padding dalam ikut mengecil */
+    border-radius: 30px; 
+    border: 1px solid #333;
+}
 
-        .icon-btn {
-            background: none; border: none; color: #666;
-            font-size: 1.2rem; cursor: pointer; transition: 0.3s;
-        }
+.input-bar input[type="text"] {
+    flex: 1; 
+    background: transparent; 
+    border: none;
+    color: #fff; 
+    padding: 10px 0; 
+    outline: none; 
+    /* Ukuran font ikut mengecil proporsional */
+    font-size: clamp(0.8rem, 4vw, 0.95rem); 
+}
 
-        .send-btn {
-            background: #ffffff; color: #000; border: none;
-            width: 35px; height: 35px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-        }
+.icon-btn {
+    background: none; 
+    border: none; 
+    color: #666;
+    /* Ikon kamera ikut mengecil */
+    font-size: clamp(1rem, 5vw, 1.2rem); 
+    cursor: pointer; 
+    transition: 0.3s;
+}
+
+.send-btn {
+    background: #ffffff; 
+    color: #000; 
+    border: none;
+    /* Ukuran tombol kirim ikut mengecil proporsional */
+    width: clamp(30px, 10vw, 40px); 
+    height: clamp(30px, 10vw, 40px); 
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer;
+    font-size: clamp(0.8rem, 4vw, 1rem);
+}
+
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
