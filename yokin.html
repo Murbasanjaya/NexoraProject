@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yokin Love RGB Rotate</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #000; /* Hitam pekat agar warna glow kontras */
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Container utama untuk memutar seluruh hati */
+        .heart-wrapper {
+            width: 500px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: rotateFull 10s linear infinite; /* Animasi muter satu layar */
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Styling Teks */
+        .text-love {
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            /* Animasi Warna RGB */
+            animation: rgbGlow 3s linear infinite;
+        }
+
+        /* Animasi 1: Teks berjalan mengikuti alur hati */
+        #tp {
+            animation: moveText 5s linear infinite;
+        }
+
+        /* Animasi 2: Putaran Hati */
+        @keyframes rotateFull {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Animasi 3: Pergerakan Teks di Jalur */
+        @keyframes moveText {
+            from { startOffset: 0%; }
+            to { startOffset: 100%; }
+        }
+
+        /* Animasi 4: Perubahan Warna Glow (RGB) */
+        @keyframes rgbGlow {
+            0% { fill: #ff0000; filter: drop-shadow(0 0 8px #ff0000); }
+            20% { fill: #00ff00; filter: drop-shadow(0 0 8px #00ff00); }
+            40% { fill: #0000ff; filter: drop-shadow(0 0 8px #0000ff); }
+            60% { fill: #ffff00; filter: drop-shadow(0 0 8px #ffff00); }
+            80% { fill: #00ffff; filter: drop-shadow(0 0 8px #00ffff); }
+            100% { fill: #ff00ff; filter: drop-shadow(0 0 8px #ff00ff); }
+        }
+
+        path { fill: none; stroke: none; }
+    </style>
+</head>
+<body>
+
+    <div class="heart-wrapper">
+        <svg viewBox="0 0 500 500">
+            <path id="lovePath" d="M250,160 
+                     C250,110 400,110 400,210 
+                     C400,310 250,410 250,460 
+                     C250,410 100,310 100,210 
+                     C100,110 250,110 250,160 Z" />
+
+            <text class="text-love">
+                <textPath id="tp" xlink:href="#lovePath" startOffset="0%">
+                    YOKIN ❤ YOKIN ❤ YOKIN ❤ YOKIN ❤ YOKIN ❤ YOKIN ❤ YOKIN ❤ YOKIN ❤ YOKIN ❤ YOKIN ❤
+                </textPath>
+            </text>
+        </svg>
+    </div>
+
+</body>
+</html>
