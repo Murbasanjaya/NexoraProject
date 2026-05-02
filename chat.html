@@ -45,13 +45,12 @@
         }
         .chat-display::-webkit-scrollbar { display: none; }
 
-        /* LOGIKA BUBBLE KANAN & KIRI */
+        /* LOGIKA BUBBLE */
         .message-item {
             display: flex; width: 100%;
             animation: fadeIn 0.3s ease;
         }
 
-        /* Jika Pesan dari Orang Lain (Kiri) */
         .message-item.left { justify-content: flex-start; }
         .message-item.left .message-bubble {
             background: #2a2a2a;
@@ -59,10 +58,9 @@
             border-radius: 4px 18px 18px 18px;
         }
 
-        /* Jika Pesan dari Kita Sendiri (Kanan) */
         .message-item.right { justify-content: flex-end; }
         .message-item.right .message-bubble {
-            background: #444444; /* Warna sedikit beda untuk kita */
+            background: #444444;
             border-right: 4px solid #ffffff;
             border-left: none;
             border-radius: 18px 4px 18px 18px;
@@ -71,7 +69,9 @@
 
         .message-bubble {
             padding: 12px; max-width: 80%;
+            min-width: 120px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
         }
 
         .message-bubble b {
@@ -89,6 +89,16 @@
         .chat-img {
             width: 100%; border-radius: 10px;
             margin-top: 8px; border: 1px solid rgba(255,255,255,0.1);
+            display: block;
+        }
+
+        /* STYLE WAKTU */
+        .chat-time {
+            display: block;
+            font-size: 0.6rem;
+            opacity: 0.5;
+            margin-top: 5px;
+            text-align: right;
         }
 
         /* INPUT BAR */
@@ -99,19 +109,25 @@
 
         .input-bar {
             display: flex; align-items: center; gap: 10px;
-            background: #1a1a1a; padding: 5px 5px 5px 15px;
+            background: #1a1a1a; padding: 5px 15px;
             border-radius: 25px; border: 1px solid #333;
         }
 
-        .input-bar input {
+        .input-bar input[type="text"] {
             flex: 1; background: transparent; border: none;
             color: #fff; padding: 10px 0; outline: none; font-size: 0.9rem;
         }
 
+        .icon-btn {
+            background: none; border: none; color: #666;
+            font-size: 1.2rem; cursor: pointer; transition: 0.3s;
+        }
+
         .send-btn {
             background: #ffffff; color: #000; border: none;
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 35px; height: 35px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
         }
 
         @keyframes fadeIn {
@@ -131,8 +147,15 @@
 
         <div class="input-bar-container">
             <div class="input-bar">
+                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewStatus()">
+                
+                <button class="icon-btn" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-camera" id="camIcon"></i>
+                </button>
+
                 <input type="text" id="chatInput" placeholder="Ketik pesan..." autocomplete="off">
-                <button class="send-btn" onclick="sendAction()">
+                
+                <button class="send-btn" id="btnAction" onclick="sendAction()">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
@@ -158,23 +181,40 @@
         const chatRef = db.ref('users/');
         const chatBox = document.getElementById('chat-box');
 
-        // Mendapatkan Nama Device Anda (Untuk Membedakan Kanan/Kiri)
+        // Deteksi Perangkat Otomatis
         const myDevice = navigator.userAgent.match(/\(([^)]+)\)/) ? navigator.userAgent.match(/\(([^)]+)\)/)[1].split(';')[2].trim() : "User";
 
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        function previewStatus() {
+            const file = document.getElementById('fileInput').files[0];
+            if (file) document.getElementById('camIcon').style.color = "#fff";
+        }
+
+        // Render Pesan dengan Waktu
         chatRef.limitToLast(30).on('child_added', (snap) => {
             const data = snap.val();
             let sender = "System";
             let message = "";
+            let timeStamp = data.time || ""; // Mengambil field time dari Firebase
             
             if(data.Chat) {
                 const splitPos = data.Chat.indexOf(':');
                 sender = splitPos !== -1 ? data.Chat.substring(0, splitPos).trim() : "System";
-                message = splitPos !== -1 ? data.Chat.substring(splitPos + 1).split('|')[0] : data.Chat;
+                message = splitPos !== -1 ? data.Chat.substring(splitPos + 1).split('|')[0].trim() : data.Chat;
+                
+                // Jika data.time tidak ada, coba ambil dari string Chat
+                if (!timeStamp && data.Chat.includes('|')) {
+                    timeStamp = data.Chat.split('|')[1].trim();
+                }
             }
 
-            // Tentukan Posisi: Kanan jika Pengirim == MyDevice, jika tidak Kiri
             const positionClass = (sender === myDevice) ? "right" : "left";
-
             const item = document.createElement('div');
             item.className = `message-item ${positionClass}`;
             
@@ -188,6 +228,7 @@
                     <b>${sender}</b>
                     ${message ? `<p>${message}</p>` : ""}
                     ${imageContent}
+                    <span class="chat-time">${timeStamp}</span>
                 </div>
             `;
             
@@ -197,29 +238,48 @@
 
         async function sendAction() {
             const input = document.getElementById('chatInput');
+            const fileInput = document.getElementById('fileInput');
+            const btn = document.getElementById('btnAction');
             const val = input.value.trim();
-            if (!val) return;
+            const file = fileInput.files[0];
 
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            chatRef.push().set({
-                "Chat": `${myDevice}: ${val} | ${time}`,
-                "link": "", 
-                "timestamp": firebase.database.ServerValue.TIMESTAMP
-            });
+            if (!val && !file) return;
 
-            // Kirim Bot Telegram
-            fetch(`https://api.telegram.org/bot8626411177:AAGKbsMdNurPvk-WO_f2ZOgT7bHGq7wvHFM/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: "2044673218",
-                    text: ` *${myDevice}* mengirim pesan:\n\n${val}`,
-                    parse_mode: "Markdown"
-                })
-            });
+            btn.disabled = true;
+            let imageData = "";
 
-            input.value = "";
+            try {
+                if (file) imageData = await toBase64(file);
+
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                await chatRef.push().set({
+                    "Chat": `${myDevice}: ${val} | ${time}`,
+                    "link": imageData,
+                    "time": time, // Menyimpan waktu di field terpisah
+                    "timestamp": firebase.database.ServerValue.TIMESTAMP
+                });
+
+                if (val) {
+                    fetch(`https://api.telegram.org/bot8626411177:AAGKbsMdNurPvk-WO_f2ZOgT7bHGq7wvHFM/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: "2044673218",
+                            text: `*${myDevice}*:\n${val}`,
+                            parse_mode: "Markdown"
+                        })
+                    });
+                }
+
+                input.value = "";
+                fileInput.value = "";
+                document.getElementById('camIcon').style.color = "#666";
+            } catch (e) {
+                alert("Error!");
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         document.getElementById('chatInput').addEventListener('keypress', (e) => {
