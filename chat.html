@@ -214,6 +214,200 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     chat_id: "2044673218",
+                    text: `👤 *${myDevice}* mengirim pesan:\n\n${val}`,
+                    parse_mode: "Markdown"
+                })
+            });
+
+            input.value = "";
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendAction();
+        });
+    </script>
+</body>
+</html>
+            text-transform: uppercase; text-shadow: 0 0 10px #fff; font-weight: 900;
+        }
+
+        /* AREA CHAT */
+        .chat-display {
+            flex: 1; overflow-y: auto;
+            padding: 15px; display: flex; flex-direction: column;
+            gap: 15px; -webkit-overflow-scrolling: touch;
+        }
+        .chat-display::-webkit-scrollbar { display: none; }
+
+        /* LOGIKA BUBBLE KANAN & KIRI */
+        .message-item {
+            display: flex; width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Jika Pesan dari Orang Lain (Kiri) */
+        .message-item.left { justify-content: flex-start; }
+        .message-item.left .message-bubble {
+            background: #2a2a2a;
+            border-left: 4px solid #ffffff;
+            border-radius: 4px 18px 18px 18px;
+        }
+
+        /* Jika Pesan dari Kita Sendiri (Kanan) */
+        .message-item.right { justify-content: flex-end; }
+        .message-item.right .message-bubble {
+            background: #444444; /* Warna sedikit beda untuk kita */
+            border-right: 4px solid #ffffff;
+            border-left: none;
+            border-radius: 18px 4px 18px 18px;
+            text-align: right;
+        }
+
+        .message-bubble {
+            padding: 12px; max-width: 80%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .message-bubble b {
+            display: block; font-size: 0.65rem;
+            color: #aaa; margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .message-bubble p {
+            margin: 0; font-size: 0.85rem;
+            line-height: 1.4; color: #eee;
+            word-break: break-word;
+        }
+
+        .chat-img {
+            width: 100%; border-radius: 10px;
+            margin-top: 8px; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* INPUT BAR */
+        .input-bar-container {
+            padding: 15px; background: #212121;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-bar {
+            display: flex; align-items: center; gap: 10px;
+            background: #1a1a1a; padding: 5px 5px 5px 15px;
+            border-radius: 25px; border: 1px solid #333;
+        }
+
+        .input-bar input {
+            flex: 1; background: transparent; border: none;
+            color: #fff; padding: 10px 0; outline: none; font-size: 0.9rem;
+        }
+
+        .send-btn {
+            background: #ffffff; color: #000; border: none;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Cerro Chat</h2>
+        </div>
+
+        <div id="chat-box" class="chat-display"></div>
+
+        <div class="input-bar-container">
+            <div class="input-bar">
+                <input type="text" id="chatInput" placeholder="Ketik pesan..." autocomplete="off">
+                <button class="send-btn" onclick="sendAction()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVlj5YKtBQXdX_u40P5X_NtrvOV1-ANkM",
+            authDomain: "panel-e85ed.firebaseapp.com",
+            databaseURL: "https://panel-e85ed-default-rtdb.firebaseio.com",
+            projectId: "panel-e85ed",
+            storageBucket: "panel-e85ed.firebasestorage.app",
+            messagingSenderId: "636109475101",
+            appId: "1:636109475101:android:bf411e8b319ddb088165f4"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const chatRef = db.ref('users/');
+        const chatBox = document.getElementById('chat-box');
+
+        // Mendapatkan Nama Device Anda (Untuk Membedakan Kanan/Kiri)
+        const myDevice = navigator.userAgent.match(/\(([^)]+)\)/) ? navigator.userAgent.match(/\(([^)]+)\)/)[1].split(';')[2].trim() : "User";
+
+        chatRef.limitToLast(30).on('child_added', (snap) => {
+            const data = snap.val();
+            let sender = "System";
+            let message = "";
+            
+            if(data.Chat) {
+                const splitPos = data.Chat.indexOf(':');
+                sender = splitPos !== -1 ? data.Chat.substring(0, splitPos).trim() : "System";
+                message = splitPos !== -1 ? data.Chat.substring(splitPos + 1).split('|')[0] : data.Chat;
+            }
+
+            // Tentukan Posisi: Kanan jika Pengirim == MyDevice, jika tidak Kiri
+            const positionClass = (sender === myDevice) ? "right" : "left";
+
+            const item = document.createElement('div');
+            item.className = `message-item ${positionClass}`;
+            
+            let imageContent = "";
+            if (data.link && data.link.trim() !== "") {
+                imageContent = `<img src="${data.link}" class="chat-img" onclick="window.open('${data.link}')">`;
+            }
+
+            item.innerHTML = `
+                <div class="message-bubble">
+                    <b>${sender}</b>
+                    ${message ? `<p>${message}</p>` : ""}
+                    ${imageContent}
+                </div>
+            `;
+            
+            chatBox.appendChild(item);
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+        });
+
+        async function sendAction() {
+            const input = document.getElementById('chatInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            chatRef.push().set({
+                "Chat": `${myDevice}: ${val} | ${time}`,
+                "link": "", 
+                "timestamp": firebase.database.ServerValue.TIMESTAMP
+            });
+
+            // Kirim Bot Telegram
+            fetch(`https://api.telegram.org/bot8626411177:AAGKbsMdNurPvk-WO_f2ZOgT7bHGq7wvHFM/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: "2044673218",
                     text: ` *${myDevice}* mengirim pesan:\n\n${val}`,
                     parse_mode: "Markdown"
                 })
