@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXORA PREMIUM CHAT</title>
+    <title>CERRO PREMIUM CHAT</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap">
@@ -28,160 +28,138 @@
         }
 
         .chat-header {
-            padding: 15px; text-align: center;
+            padding: 12px; text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
         }
 
         .chat-header h2 {
-            font-size: 0.9rem; letter-spacing: 3px; margin: 0;
+            font-size: 0.85rem; letter-spacing: 2px; margin: 0;
             text-transform: uppercase; text-shadow: 0 0 10px #fff; font-weight: 900;
         }
 
-        /* AREA CHAT */
         .chat-display {
             flex: 1; overflow-y: auto;
             padding: 15px; display: flex; flex-direction: column;
-            gap: 15px; -webkit-overflow-scrolling: touch;
+            gap: 12px; -webkit-overflow-scrolling: touch;
         }
         .chat-display::-webkit-scrollbar { display: none; }
 
-        /* LOGIKA BUBBLE */
-        .message-item {
-            display: flex; width: 100%;
-            animation: fadeIn 0.3s ease;
-        }
-
+        .message-item { display: flex; width: 100%; animation: fadeIn 0.3s ease; margin-bottom: 5px; }
         .message-item.left { justify-content: flex-start; }
-        .message-item.left .message-bubble {
-            background: #2a2a2a;
-            border-left: 4px solid #ffffff;
-            border-radius: 4px 18px 18px 18px;
-        }
-
         .message-item.right { justify-content: flex-end; }
-        .message-item.right .message-bubble {
-            background: #444444;
-            border-right: 4px solid #ffffff;
-            border-left: none;
-            border-radius: 18px 4px 18px 18px;
-            text-align: right;
-        }
 
         .message-bubble {
-            padding: 12px; max-width: 80%;
-            min-width: 120px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 10px 12px; max-width: 85%;
+            min-width: 100px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             position: relative;
         }
 
-        .message-bubble b {
-            display: block; font-size: 0.65rem;
-            color: #aaa; margin-bottom: 4px;
-            text-transform: uppercase;
+        .message-item.left .message-bubble {
+            background: #2a2a2a; border-left: 3px solid #ffffff;
+            border-radius: 4px 15px 15px 15px;
         }
 
-        .message-bubble p {
-            margin: 0; font-size: 0.85rem;
-            line-height: 1.4; color: #eee;
-            word-break: break-word;
+        .message-item.right .message-bubble {
+            background: #444444; border-right: 3px solid #ffffff;
+            border-radius: 15px 4px 15px 15px; text-align: left;
         }
 
-        .chat-img {
-            width: 100%; border-radius: 10px;
-            margin-top: 8px; border: 1px solid rgba(255,255,255,0.1);
-            display: block;
+        .message-bubble b { display: block; font-size: 0.6rem; color: #aaa; margin-bottom: 3px; text-transform: uppercase; }
+        .message-bubble p { margin: 0; font-size: 0.85rem; line-height: 1.3; color: #eee; word-break: break-word; }
+        
+        /* Gambar & Tombol Download */
+        .img-wrapper {
+            position: relative;
+            margin-top: 8px;
+            width: 100%;
         }
 
-        /* STYLE WAKTU */
-        .chat-time {
-            display: block;
-            font-size: 0.6rem;
-            opacity: 0.5;
-            margin-top: 5px;
-            text-align: right;
+        .chat-img { 
+            width: 100%; 
+            border-radius: 8px; 
+            display: block; 
+            cursor: pointer; 
         }
 
-        /* INPUT BAR */
-/* --- UPDATE UNTUK RESPONSIVE INPUT --- */
-
-.input-bar-container {
-    padding: clamp(10px, 3vw, 20px); /* Padding mengecil di layar kecil */
-    background: #212121;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.input-bar {
-    display: flex; 
-    align-items: center; 
-    gap: 2vw; /* Jarak antar elemen ikut mengecil */
-    background: #1a1a1a; 
-    padding: 1vw 4vw; /* Padding dalam ikut mengecil */
-    border-radius: 30px; 
-    border: 1px solid #333;
-}
-
-.input-bar input[type="text"] {
-    flex: 1; 
-    background: transparent; 
-    border: none;
-    color: #fff; 
-    padding: 10px 0; 
-    outline: none; 
-    /* Ukuran font ikut mengecil proporsional */
-    font-size: clamp(0.8rem, 4vw, 0.95rem); 
-}
-
-.icon-btn {
-    background: none; 
-    border: none; 
-    color: #666;
-    /* Ikon kamera ikut mengecil */
-    font-size: clamp(1rem, 5vw, 1.2rem); 
-    cursor: pointer; 
-    transition: 0.3s;
-}
-
-.send-btn {
-    background: #ffffff; 
-    color: #000; 
-    border: none;
-    /* Ukuran tombol kirim ikut mengecil proporsional */
-    width: clamp(30px, 10vw, 40px); 
-    height: clamp(30px, 10vw, 40px); 
-    border-radius: 50%;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    cursor: pointer;
-    font-size: clamp(0.8rem, 4vw, 1rem);
-}
-
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+        .dl-mini-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 0.75rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: 0.3s;
+            z-index: 5;
         }
+
+        .dl-mini-btn:hover {
+            background: #ffffff;
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        .chat-time { display: block; font-size: 0.55rem; opacity: 0.4; margin-top: 5px; text-align: right; }
+
+        .input-bar-container {
+            padding: 10px; 
+            background: #1a1a1a;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .input-bar {
+            display: flex; align-items: center; 
+            gap: 8px; width: 100%;
+        }
+
+        .input-bar input[type="text"] {
+            flex: 1; min-width: 0; 
+            background: #2a2a2a; border: 1px solid #333;
+            color: #fff; padding: 10px 15px; border-radius: 20px;
+            outline: none; font-size: 0.85rem;
+        }
+
+        .icon-btn {
+            flex-shrink: 0; width: 35px; height: 35px;
+            background: none; border: none; color: #666;
+            font-size: 1.1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .send-btn {
+            flex-shrink: 0; width: 38px; height: 38px;
+            background: #ffffff; color: #000; border: none;
+            border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="chat-container">
-        <div class="chat-header">
-            <h2>Cerro Chat</h2>
-        </div>
-
+        <div class="chat-header"><h2>Cerro Chat</h2></div>
         <div id="chat-box" class="chat-display"></div>
 
         <div class="input-bar-container">
             <div class="input-bar">
                 <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewStatus()">
-                
                 <button class="icon-btn" onclick="document.getElementById('fileInput').click()">
                     <i class="fas fa-camera" id="camIcon"></i>
                 </button>
-
-                <input type="text" id="chatInput" placeholder="Ketik pesan..." autocomplete="off">
-                
+                <input type="text" id="chatInput" placeholder="Pesan..." autocomplete="off">
                 <button class="send-btn" id="btnAction" onclick="sendAction()">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -208,8 +186,22 @@
         const chatRef = db.ref('users/');
         const chatBox = document.getElementById('chat-box');
 
-        // Deteksi Perangkat Otomatis
-        const myDevice = navigator.userAgent.match(/\(([^)]+)\)/) ? navigator.userAgent.match(/\(([^)]+)\)/)[1].split(';')[2].trim() : "User";
+        const getDeviceInfo = () => {
+            const ua = navigator.userAgent;
+            let model = "User";
+            if (ua.includes("Android")) {
+                const match = ua.match(/\(([^;]+);([^;]+);([^)]+)\)/);
+                if (match) {
+                    model = match[3].split("Build/")[0].trim();
+                } else {
+                    model = "Android Device";
+                }
+            }
+            const uniqueId = Math.floor(1000 + Math.random() * 9000);
+            return `${model}#${uniqueId}`;
+        };
+
+        const myDevice = getDeviceInfo();
 
         const toBase64 = file => new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -223,44 +215,47 @@
             if (file) document.getElementById('camIcon').style.color = "#fff";
         }
 
-        // Render Pesan dengan Waktu
         chatRef.limitToLast(30).on('child_added', (snap) => {
             const data = snap.val();
-            let sender = "System";
-            let message = "";
-            let timeStamp = data.time || ""; // Mengambil field time dari Firebase
+            if(!data) return;
+
+            let sender = "System", message = "", timeStamp = data.time || "--:--";
             
             if(data.Chat) {
-                const splitPos = data.Chat.indexOf(':');
-                sender = splitPos !== -1 ? data.Chat.substring(0, splitPos).trim() : "System";
-                message = splitPos !== -1 ? data.Chat.substring(splitPos + 1).split('|')[0].trim() : data.Chat;
-                
-                // Jika data.time tidak ada, coba ambil dari string Chat
-                if (!timeStamp && data.Chat.includes('|')) {
-                    timeStamp = data.Chat.split('|')[1].trim();
-                }
+                const parts = data.Chat.split(':');
+                sender = parts[0].trim();
+                message = parts.slice(1).join(':').split('|')[0].trim();
+                if(data.Chat.includes('|')) timeStamp = data.Chat.split('|').pop().trim();
             }
 
-            const positionClass = (sender === myDevice) ? "right" : "left";
+            const isMe = (sender === myDevice);
             const item = document.createElement('div');
-            item.className = `message-item ${positionClass}`;
+            item.className = `message-item ${isMe ? 'right' : 'left'}`;
             
-            let imageContent = "";
-            if (data.link && data.link.trim() !== "") {
-                imageContent = `<img src="${data.link}" class="chat-img" onclick="window.open('${data.link}')">`;
+            // Logika Gambar dengan Tombol Download Khusus Pesan Orang Lain
+            let imgHtml = "";
+            if (data.link && data.link.startsWith("data:image")) {
+                imgHtml = `
+                    <div class="img-wrapper">
+                        <img src="${data.link}" class="chat-img" onclick="window.open('${data.link}')">
+                        ${!isMe ? `
+                            <a href="${data.link}" download="nexora_${Date.now()}.png" class="dl-mini-btn">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        ` : ""}
+                    </div>`;
             }
 
             item.innerHTML = `
                 <div class="message-bubble">
                     <b>${sender}</b>
                     ${message ? `<p>${message}</p>` : ""}
-                    ${imageContent}
+                    ${imgHtml}
                     <span class="chat-time">${timeStamp}</span>
                 </div>
             `;
-            
             chatBox.appendChild(item);
-            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+            chatBox.scrollTop = chatBox.scrollHeight;
         });
 
         async function sendAction() {
@@ -273,39 +268,28 @@
             if (!val && !file) return;
 
             btn.disabled = true;
-            let imageData = "";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
             try {
-                if (file) imageData = await toBase64(file);
-
-                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                let imageData = file ? await toBase64(file) : "";
+                const now = new Date();
+                const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
                 
                 await chatRef.push().set({
-                    "Chat": `${myDevice}: ${val} | ${time}`,
+                    "Chat": `${myDevice}: ${val} | ${timeStr}`,
                     "link": imageData,
-                    "time": time, // Menyimpan waktu di field terpisah
+                    "time": timeStr,
                     "timestamp": firebase.database.ServerValue.TIMESTAMP
                 });
-
-                if (val) {
-                    fetch(`https://api.telegram.org/bot8626411177:AAGKbsMdNurPvk-WO_f2ZOgT7bHGq7wvHFM/sendMessage`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            chat_id: "2044673218",
-                            text: `*${myDevice}*:\n${val}`,
-                            parse_mode: "Markdown"
-                        })
-                    });
-                }
 
                 input.value = "";
                 fileInput.value = "";
                 document.getElementById('camIcon').style.color = "#666";
             } catch (e) {
-                alert("Error!");
+                alert("Gagal mengirim!");
             } finally {
                 btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
             }
         }
 
