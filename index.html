@@ -3,86 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#080808"> <title>NEXORA | Protocol v.2</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>NEXORA | Protocol v.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
+    
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 </head>
 <body>
-
     <div class="grid-bg"></div>
-    <div class="noise-overlay"></div>
 
     <div class="container">
-        <header>
-            <div class="logo-wrapper">
-                <svg class="main-logo" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2v10M12 12l-4 4M12 12l4 4M12 12l-8-2M12 12l8-2M12 12l-8-8M12 12l8-8"/>
-                    <circle cx="12" cy="12" r="3"/>
-                </svg>
-                <h1>NEXORA</h1>
-                <span class="badge">PROTOCOL v.2</span>
+        <header class="blur-reveal">
+            <div class="status-row">
+                <span class="status-dot"></span>
+                <span id="typewriter"></span>
             </div>
-            <div id="typewriter" class="subtitle"></div>
+            <button id="musicToggle" class="music-btn">SOUND: OFF</button>
         </header>
 
-        <main class="ui-card">
-            <div class="card-header">
-                <div class="controls">
-                    <span></span><span></span><span></span>
-                </div>
-                <div class="title-bar">REMOTE_ACCESS_TERMINAL</div>
-            </div>
-
-            <div class="card-body">
-                <div class="info-row">
-                    <span class="label">FILE:</span>
-                    <span class="value white">Nexora.apk</span>
-                </div>
+        <main>
+            <section class="hero-section blur-reveal">
+                <div class="status-badge">STABLE RELEASE</div>
+                <h2 class="main-title">NEXORA APK</h2>
                 
-                <div class="info-row">
-                    <span class="label">SIZE:</span>
-                    <span class="value" id="fileSize">...</span>
-                </div>
+                <div class="action-grid">
+                    <div id="verify-box">
+                        <p class="verify-label">> HUMAN_CHECK_REQUIRED</p>
+                        <span id="math-question"></span>
+                        <div class="verify-input-row">
+                            <input type="number" id="math-answer" placeholder="...">
+                            <button onclick="checkVerify()" class="btn-verify">VERIFY</button>
+                        </div>
+                    </div>
 
-                <div class="info-row">
-                    <span class="label">STATUS:</span>
-                    <span class="value blink">UNDETECTED</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="label">INSTALLS:</span>
-                    <span class="value white" id="installCount">0</span>
-                </div>
-
-                <div class="action-area">
-                    <a href="Nexora.apk" class="btn-primary" id="downloadBtn" download>
-                        <span class="btn-text">INITIALIZE DOWNLOAD</span>
+                    <button class="btn-main" id="btnDownload">
+                        <span class="btn-text">INITIALIZE INSTALLATION</span>
                         <div class="btn-progress"></div>
-                    </a>
+                    </button>
                 </div>
-            </div>
+            </section>
+
+            <section class="data-cards blur-reveal">
+                <div class="card">
+                    <span class="card-label">INSTALLS</span>
+                    <span class="card-value" id="downloadCount">0</span>
+                </div>
+                <div class="card">
+                    <span class="card-label">SIZE</span>
+                    <span class="card-value">14.2 MB</span>
+                </div>
+                <div class="card">
+                    <span class="card-label">STATUS</span>
+                    <span class="card-value blink" style="color: #ffffff;">ONLINE</span>
+                </div>
+            </section>
         </main>
 
-        <div class="guide-link-area">
-    <a href="tutorial.html" class="guide-btn">VIEW INSTALLATION GUIDE</a>
-</div>
-
-
         <footer>
-            &copy; 2026 NEXORA SYSTEM. ALL RIGHTS RESERVED.
+            <a href="tutorial.html" class="guide-link">VIEW INSTALLATION GUIDE</a>
+            <p class="footer-copy">© 2026 NEXORA SYSTEM</p>
         </footer>
     </div>
 
-<audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
-
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
 
     <script src="script.js"></script>
-    
 </body>
 </html>

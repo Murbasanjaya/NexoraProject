@@ -1,182 +1,1 @@
-/* =========================================
-   NEXORA CORE SCRIPT - PRO V3
-   ========================================= */
-const music = document.getElementById('bgMusic');
-
-// Function untuk sinkronisasi musik
-function syncMusic() {
-    const savedTime = localStorage.getItem('musicTime');
-    const isPlaying = localStorage.getItem('musicPlaying');
-
-    if (savedTime) {
-        music.currentTime = parseFloat(savedTime);
-    }
-
-    if (isPlaying === 'true') {
-        music.play().catch(() => {
-            // Browser biasanya blokir autoplay, tunggu klik user
-            document.addEventListener('click', () => music.play(), { once: true });
-        });
-    }
-}
-
-// Simpan posisi musik setiap detik
-setInterval(() => {
-    if (!music.paused) {
-        localStorage.setItem('musicTime', music.currentTime);
-        localStorage.setItem('musicPlaying', 'true');
-    } else {
-        localStorage.setItem('musicPlaying', 'false');
-    }
-}, 1000);
-
-window.addEventListener('load', syncMusic);
-
-
-// --- CONFIG FIREBASE ---
-const firebaseConfig = {
-    apiKey: "AIzaSyDVlj5YKtBQXdX_u40P5X_NtrvOV1-ANkM",
-    authDomain: "panel-e85ed.firebaseapp.com",
-    databaseURL: "https://panel-e85ed-default-rtdb.firebaseio.com",
-    projectId: "panel-e85ed",
-    storageBucket: "panel-e85ed.firebasestorage.app",
-    messagingSenderId: "636109475101",
-    appId: "1:636109475101:android:bf411e8b319ddb088165f4"
-};
-
-// Inisialisasi Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-
-// Struktur Folder Website
-const websiteRef = database.ref('website/data');
-const installRef = websiteRef.child('total_installs');
-const maintenanceRef = database.ref('website/settings/maintenance');
-
-// --- 1. SYSTEM MAINTENANCE (Realtime) ---
-maintenanceRef.on('value', (snapshot) => {
-    const isMaintenance = snapshot.val();
-    if (isMaintenance === true) {
-        document.body.innerHTML = `
-            <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#080808; color:white; font-family:'Fira Code',monospace; text-align:center; padding:20px;">
-                <h1 style="text-shadow:0 0 20px #fff; font-size:2rem;">SYSTEM UNDER MAINTENANCE</h1>
-                <p style="color:#555; margin-top:15px; letter-spacing:1px;">> Nexora Protocol is updating. Access denied.</p>
-                <div class="blink" style="margin-top:30px; color:#ff3333; font-weight:bold;">[ STATUS: OFFLINE ]</div>
-            </div>
-        `;
-    }
-});
-
-// --- 2. AMBIL DATA INSTALLS (Folder Website) ---
-installRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    const installCountElement = document.getElementById('installCount');
-    if (data !== null) {
-        installCountElement.innerText = data.toLocaleString('id-ID');
-    } else {
-        installRef.set(0); // Nilai awal jika database kosong
-    }
-});
-
-// --- 3. TELEGRAM NOTIFIER ---
-const TELEGRAM_BOT_TOKEN = "8656411338:AAHCKBjZJzf_i4AMOOW2sHCK_IdIlTkZMY4"; 
-const TELEGRAM_CHAT_ID = "2044673218"; 
-
-function sendTelegramAlert(newTotal) {
-    const time = new Date().toLocaleString('id-ID');
-    const msg = ` *NEXORA NOTIFICATION*\n\n` +
-                `Target baru saja mengunduh APK!\n` +
-                ` Waktu: ${time}\n` +
-                ` Total Installs: *${newTotal}*`;
-    
-    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            chat_id: TELEGRAM_CHAT_ID, 
-            text: msg, 
-            parse_mode: 'Markdown' 
-        })
-    });
-}
-
-// --- 4. LOGIKA TOMBOL DOWNLOAD & ANIMASI ---
-const downloadBtn = document.getElementById('downloadBtn');
-const btnText = document.querySelector('.btn-text');
-const btnProgress = document.querySelector('.btn-progress');
-
-downloadBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    const music = document.getElementById('bgMusic');
-    const apkUrl = this.getAttribute('href');
-
-    if (this.classList.contains('loading')) return;
-
-    // Music Trigger
-    if (music && music.paused) {
-        music.volume = 0.3;
-        music.play();
-    }
-
-    this.classList.add('loading');
-    btnText.innerText = "INSTAL...";
-    
-    let width = 0;
-    const interval = setInterval(() => {
-        width += Math.random() * 12; // Animasi progress
-        if (width >= 100) {
-            width = 100;
-            clearInterval(interval);
-            
-            btnText.innerText = "ACCESS GRANTED";
-            
-            // Transaction Firebase (Update +1)
-            installRef.transaction((currentValue) => {
-                const updatedValue = (currentValue || 0) + 1;
-                sendTelegramAlert(updatedValue);
-                return updatedValue;
-            });
-
-            // Jalankan Download APK
-            setTimeout(() => {
-                window.location.href = apkUrl;
-            }, 800);
-
-            // Reset Tombol
-            setTimeout(() => {
-                this.classList.remove('loading');
-                btnText.innerText = "EXECUTE INSTALLATION";
-                btnProgress.style.width = "0%";
-            }, 4000);
-        }
-        btnProgress.style.width = width + '%';
-    }, 100);
-});
-
-// --- 5. EKSTRA (Typewriter & File Size) ---
-const typeText = "> Initializing Nexora Secure Protocol...";
-let typeIndex = 0;
-function typeWriter() {
-    const el = document.getElementById("typewriter");
-    if (el && typeIndex < typeText.length) {
-        el.innerHTML += typeText.charAt(typeIndex);
-        typeIndex++; 
-        setTimeout(typeWriter, 40);
-    }
-}
-
-async function fetchFileSize() {
-    const sizeElement = document.getElementById('fileSize');
-    try {
-        const response = await fetch('Nexora.apk', { method: 'HEAD' });
-        const bytes = response.headers.get('content-length');
-        sizeElement.innerText = bytes ? (bytes / (1024 * 1024)).toFixed(2) + " MB" : "24.50 MB";
-    } catch (e) { 
-        sizeElement.innerText = "24.50 MB"; 
-    }
-}
-
-window.onload = () => { 
-    typeWriter(); 
-    fetchFileSize(); 
-};
+/* =========================================   NEXORA CORE SCRIPT - V12 (CYBER VERSION)   ========================================= */const firebaseConfig = {    apiKey: "AIzaSyDVlj5YKtBQXdX_u40P5X_NtrvOV1-ANkM",    authDomain: "panel-e85ed.firebaseapp.com",    databaseURL: "https://panel-e85ed-default-rtdb.firebaseio.com",    projectId: "panel-e85ed",    storageBucket: "panel-e85ed.firebasestorage.app",    messagingSenderId: "636109475101",    appId: "1:636109475101:android:bf411e8b319ddb088165f4"};// Inisialisasi Firebaseif (typeof firebase !== 'undefined') {    firebase.initializeApp(firebaseConfig);}const db = firebase.database();let mathTotal = 0;// 1. FUNGSI GENERATE SOAL MATEMATIKAfunction generateMath() {    let n1 = Math.floor(Math.random() * 10) + 1;    let n2 = Math.floor(Math.random() * 10) + 1;    mathTotal = n1 + n2;    const qEl = document.getElementById('math-question');    if(qEl) qEl.innerText = `${n1} + ${n2} = ?`;}// 2. FUNGSI CEK VERIFIKASIfunction checkVerify() {    const ans = document.getElementById('math-answer').value;    const dlBtn = document.getElementById('btnDownload');    const verifyBox = document.getElementById('verify-box');        if(parseInt(ans) === mathTotal) {        if(verifyBox) verifyBox.style.display = 'none';        dlBtn.style.opacity = "1";        dlBtn.style.pointerEvents = "auto";        alert("ACCESS_GRANTED: HUMAN_CONFIRMED");    } else {        alert("ERROR: INVALID_RESPONSE");        generateMath();    }}document.addEventListener("DOMContentLoaded", () => {        // --- 3. REMOTE MAINTENANCE CHECK (KEREN VERSION) ---    db.ref('app_stats/nexora/minetance').on('value', (snapshot) => {        if (snapshot.val() === true) {            document.body.innerHTML = `                <div class="grid-bg"></div>                <div class="container" style="justify-content: center; align-items: center; text-align: center; height: 100vh;">                    <div class="blur-reveal active">                        <div style="margin-bottom: 20px;">                            <span class="status-dot" style="background: #ff3e3e; box-shadow: 0 0 15px #ff3e3e; animation: blinker 0.8s infinite;"></span>                            <span style="font-family: 'Fira Code'; font-size: 0.7rem; color: #ff3e3e; letter-spacing: 2px;">SECURITY_BREACH_DETECTED</span>                        </div>                                                <h1 style="font-size: 3.5rem; font-weight: 900; letter-spacing: -4px; line-height: 0.8; margin-bottom: 25px; color: #fff;">                            SYSTEM<br><span style="color: #111; text-shadow: -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;">OFFLINE</span>                        </h1>                                                <div style="display: inline-block; padding: 6px 20px; border: 1px solid #333; color: #555; font-size: 0.6rem; font-family: 'Fira Code'; margin-bottom: 40px; border-radius: 50px; background: rgba(255,255,255,0.02);">                            MAINTENANCE_PROTOCOLS_V.2                        </div>                        <p style="font-family: 'Fira Code'; font-size: 0.7rem; color: #444; line-height: 2; max-width: 280px; margin: 0 auto;">                            > Updating encryption keys...<br>                            > Optimizing server response...<br>                            > Please re-establish connection later.                        </p>                                                <div style="margin-top: 50px; font-size: 0.5rem; color: #1a1a1a; font-family: 'Fira Code'; letter-spacing: 5px;">                            0x551_NEXORA_CORE                        </div>                    </div>                </div>            `;            const music = document.getElementById("bgMusic");            if(music) music.pause();        } else {            // Jika false, jalankan website normal            initNexoraApp();        }    });});function initNexoraApp() {    const music = document.getElementById("bgMusic");    const musicBtn = document.getElementById("musicToggle");    const dlBtn = document.getElementById("btnDownload");    const typeTarget = document.getElementById("typewriter");    // --- 4. MUSIC LOGIC (AUTO-SYNC) ---    if (music && musicBtn) {        let isPlaying = localStorage.getItem('musicPlaying') === 'true';        if (localStorage.getItem('musicTime')) music.currentTime = parseFloat(localStorage.getItem('musicTime'));        const playMusic = () => {            music.play().then(() => {                musicBtn.innerText = "SOUND: ON";                localStorage.setItem('musicPlaying', 'true');            }).catch(() => {});        };        if (isPlaying) playMusic();                document.addEventListener('click', () => {             if(localStorage.getItem('musicPlaying') === 'true') playMusic();         }, {once: true});        musicBtn.onclick = () => {            if (!music.paused) {                music.pause();                musicBtn.innerText = "SOUND: OFF";                localStorage.setItem('musicPlaying', 'false');            } else {                playMusic();            }        };        setInterval(() => {            if (!music.paused) localStorage.setItem('musicTime', music.currentTime);        }, 1000);    }    // --- 5. VERIFY CONTROL FROM FIREBASE ---    db.ref('app_stats/nexora/verify').on('value', (snap) => {        const verifyBox = document.getElementById('verify-box');        if (snap.val() === true) {            if(verifyBox) verifyBox.style.display = "block";            dlBtn.style.opacity = "0.3";            dlBtn.style.pointerEvents = "none";            generateMath();        } else {            if(verifyBox) verifyBox.style.display = "none";            dlBtn.style.opacity = "1";            dlBtn.style.pointerEvents = "auto";        }    });    // --- 6. DOWNLOAD LOGIC (WITH BAR) ---    // Di dalam fungsi initNexoraApp() atau initialize...if (dlBtn) {    dlBtn.onclick = function(e) {        // Jangan jalankan jika sudah sedang loading        if(this.classList.contains('loading')) return;                const btnText = this.querySelector(".btn-text");        const loader = this.querySelector(".btn-loader"); // Mengambil elemen bar putih                this.classList.add("loading");        btnText.innerText = "ESTABLISHING CONNECTION...";        let progress = 0;        const interval = setInterval(() => {            progress += 2; // Kecepatan jalan bar                        if (loader) {                loader.style.width = progress + "%"; // Menggerakkan lebar bar            }                        if (progress >= 100) {                clearInterval(interval);                                // Tambah angka download di Firebase                db.ref('app_stats/nexora/downloads').transaction(c => (c || 0) + 1);                                // Mulai download file                window.location.href = "Nexora.apk";                                // Reset tombol setelah selesai                setTimeout(() => {                    this.classList.remove("loading");                    btnText.innerText = "INITIALIZE INSTALLATION";                    if (loader) loader.style.width = "0%";                }, 3000);            }        }, 50); // Kecepatan update (50ms)    };}    // --- 7. COUNTERS & UI ANIMATION ---    db.ref('app_stats/nexora/downloads').on('value', snap => {        const countEl = document.getElementById('downloadCount');        if(countEl) countEl.innerText = (snap.val() || 0).toLocaleString();    });    if (typeTarget) {        const textStr = "> NEXORA_PROTOCOL_v.2";        let i = 0;        typeTarget.innerHTML = "";        const type = () => {            if (i < textStr.length) {                typeTarget.innerHTML += textStr.charAt(i);                i++; setTimeout(type, 80);            }        };        type();    }    document.querySelectorAll(".blur-reveal").forEach((el, i) => {        setTimeout(() => el.classList.add("active"), i * 200);    });}
