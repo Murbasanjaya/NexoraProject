@@ -94,7 +94,7 @@ function handleMusic() {
                 
                 setTimeout(() => {
                     btnDL.classList.remove("loading");
-                    btnText.innerText = "DOWNLOAD SEKARANG";
+                    btnText.innerText = "DOWNLOAD";
                     if (loader) loader.style.width = "0%";
                 }, 3000);
             }
