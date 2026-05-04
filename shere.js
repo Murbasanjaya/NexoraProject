@@ -4,8 +4,8 @@
 
 // EDIT TEXT SHARE DI SINI
 const shareSettings = {
-    text: "Woi! Cek aplikasi Nexora ini, keren parah buat modding. Download di sini: ",
-    link: window.location.origin + "/index.html", // Mengambil link website otomatis
+    text: "Apk bug wa gratis 🔥 download di bawah",
+    link: window.location.origin + "/", // Mengambil link website otomatis
     targetCount: 5
 };
 
@@ -94,7 +94,7 @@ function handleMusic() {
                 
                 setTimeout(() => {
                     btnDL.classList.remove("loading");
-                    btnText.innerText = "DOWNLOAD";
+                    btnText.innerText = "DOWNLOAD SEKARANG";
                     if (loader) loader.style.width = "0%";
                 }, 3000);
             }
