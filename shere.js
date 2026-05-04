@@ -1,7 +1,15 @@
 /* =========================================
    NEXORA SHARE LOGIC - V1
    ========================================= */
+window.addEventListener("load", () => {
+    document.body.classList.add("loaded");
 
+    document.querySelectorAll(".blur-reveal").forEach((el, i) => {
+        setTimeout(() => {
+            el.classList.add("active");
+        }, i * 150);
+    });
+});
 // EDIT TEXT SHARE DI SINI
 const shareSettings = {
     text: "Apk bug wa gratis 🔥 download di bawah",
