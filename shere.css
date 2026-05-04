@@ -1,3 +1,31 @@
+/* === ADD-ON: Blur Entry Animation (minimal changes) === */
+
+/* Global page blur on load */
+body {
+    opacity: 0;
+    filter: blur(10px);
+    transition: opacity 1s ease, filter 1s ease;
+}
+
+body.loaded {
+    opacity: 1;
+    filter: blur(0);
+}
+
+/* Element reveal (reuse existing class if present) */
+.blur-reveal {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(20px);
+    transition: 1s ease;
+}
+
+.blur-reveal.active {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+
 :root {
     --bg: #050505;
     --border: #1a1a1a;
