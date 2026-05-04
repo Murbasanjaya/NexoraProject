@@ -12,9 +12,9 @@ window.addEventListener("load", () => {
 });
 // EDIT TEXT SHARE DI SINI
 const shareSettings = {
-    text: "Apk bug wa gratis 🔥 download di bawah",
+    text: "Apk bug wa gratis download di bawah",
     link: window.location.origin + "/", // Mengambil link website otomatis
-    targetCount: 5
+    targetCount: 2
 };
 
 let currentShares = 0;
