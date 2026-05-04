@@ -1,0 +1,60 @@
+:root {
+    --bg: #050505;
+    --border: #1a1a1a;
+    --accent: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--bg);
+    color: var(--accent);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+.grid-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+.container { padding: 30px; max-width: 450px; margin: auto; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+
+header { margin-bottom: 30px; }
+.status-dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 10px; box-shadow: 0 0 10px #00ff00; }
+#protocol-text { font-family: 'Fira Code'; font-size: 0.7rem; color: #555; }
+
+.main-title { font-size: 2.5rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px; }
+.share-desc { color: #555; font-size: 0.8rem; margin-bottom: 40px; line-height: 1.5; }
+
+/* Progress UI */
+.progress-container { margin-bottom: 30px; }
+.progress-text { font-family: 'Fira Code'; font-size: 0.7rem; color: #fff; margin-bottom: 10px; text-align: right; }
+.progress-bar-bg { width: 100%; height: 10px; background: #111; border: 1px solid #222; border-radius: 5px; overflow: hidden; }
+.progress-bar-fill { width: 0%; height: 100%; background: #fff; transition: width 0.4s ease; }
+
+/* Buttons */
+.btn-share {
+    width: 100%; padding: 20px; background: #25D366; border: none; color: #fff; 
+    font-weight: 900; font-size: 0.8rem; border-radius: 15px; cursor: pointer; transition: 0.3s;
+}
+.btn-share:hover { transform: scale(1.02); background: #128C7E; }
+
+.btn-main {
+    position: relative; width: 100%; padding: 22px; background: transparent; border: 1px solid #fff;
+    color: #fff; font-weight: 900; border-radius: 15px; cursor: pointer; overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
+}
+.btn-text { position: relative; z-index: 10; font-size: 0.8rem; }
+.btn-progress { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: #fff; z-index: 5; transition: width 0.1s linear; }
+
+.btn-main.loading .btn-text { color: #000; }
+.disabled { opacity: 0.3; pointer-events: none; }
+
+.footer-copy { text-align: center; color: #222; font-size: 0.5rem; margin-top: 50px; }
+
+.blur-reveal { opacity: 0; filter: blur(10px); transform: translateY(15px); transition: 1s ease; }
+.blur-reveal.active { opacity: 1; filter: blur(0); transform: translateY(0); }

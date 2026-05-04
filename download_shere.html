@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXORA | Share Protocol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shere.css">
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <div class="container">
+        <header class="blur-reveal active">
+            <div class="status-row">
+                <span class="status-dot"></span>
+                <span id="protocol-text">> SHARING_REQUIRED</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="share-section blur-reveal active">
+                <h2 class="main-title">FINAL STEP</h2>
+                <p class="share-desc">Silakan bagikan ke 5 teman/grup WhatsApp untuk membuka kunci unduhan.</p>
+                
+                <div class="progress-container">
+                    <div class="progress-text">PROGRESS: <span id="shareCount">0</span>/5</div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progressBar"></div>
+                    </div>
+                </div>
+
+                <button class="btn-share" id="btnWhatsApp">
+                    <span class="btn-text">SHARE KE WHATSAPP</span>
+                </button>
+
+                <button class="btn-main disabled" id="btnFinalDownload" style="margin-top: 20px; display: none;">
+                    <span class="btn-text">DOWNLOAD SEKARANG</span>
+                    <div class="btn-progress"></div>
+                </button>
+            </section>
+        </main>
+
+        <footer>
+            <p class="footer-copy">© 2026 NEXORA SYSTEM</p>
+        </footer>
+    </div>
+
+    <script src="shere.js"></script>
+</body>
+</html>

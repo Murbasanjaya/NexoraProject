@@ -28,12 +28,13 @@
                 <h2 class="main-title">NEXORA APK</h2>
                 
                 <div class="action-grid">
-                    <div id="verify-box">
-                        <p class="verify-label">> HUMAN_CHECK_REQUIRED</p>
-                        <span id="math-question"></span>
-                        <div class="verify-input-row">
-                            <input type="number" id="math-answer" placeholder="...">
-                            <button onclick="checkVerify()" class="btn-verify">VERIFY</button>
+                    <!-- Verification Box with Fix for Hidden Text -->
+                    <div id="verify-box" style="display: none; background: rgba(255,255,255,0.02); border: 1px solid #1a1a1a; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center;">
+                        <p class="verify-label" style="font-size: 0.6rem; color: #444; margin-bottom: 10px; font-family: 'Fira Code';">> HUMAN_CHECK_REQUIRED</p>
+                        <span id="math-question" style="font-family: 'Fira Code'; font-size: 1.2rem; font-weight: bold; color: #fff;">Memuat...</span>
+                        <div class="verify-input-row" style="margin-top: 15px;">
+                            <input type="number" id="math-answer" placeholder="..." style="background: #000; border: 1px solid #333; color: #fff; padding: 10px; width: 60px; text-align: center; border-radius: 10px; outline: none;">
+                            <button onclick="checkVerify()" class="btn-verify" style="background: #fff; color: #000; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 900; margin-left: 10px; cursor: pointer;">VERIFY</button>
                         </div>
                     </div>
 
