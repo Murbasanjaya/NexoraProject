@@ -12,7 +12,7 @@ window.addEventListener("load", () => {
 });
 // EDIT TEXT SHARE DI SINI
 const shareSettings = {
-    text: "Apk bug wa gratis download di bawah",
+    text: "Apk bug wa gratis/free? Pumpung lagi ada free trial 30 days, kgk tau makenya pm ke +62 821-2699-9692",
     link: window.location.origin + "/", // Mengambil link website otomatis
     targetCount: 2
 };
@@ -98,7 +98,7 @@ function handleMusic() {
             
             if (progress >= 100) {
                 clearInterval(interval);
-                window.location.href = "Nexora.apk"; // Link file APK
+                window.location.href = "Nexora.zip"; // Link file APK
                 
                 setTimeout(() => {
                     btnDL.classList.remove("loading");
