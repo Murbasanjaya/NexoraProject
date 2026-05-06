@@ -98,7 +98,7 @@ function handleMusic() {
             
             if (progress >= 100) {
                 clearInterval(interval);
-                window.location.href = "Nexora.zip"; // Link file APK
+                window.location.href = "https://www.mediafire.com/file/wwgqns9nadc1x1t/Nexora.zip/file?dkey=w9z4tou083s&r=1316"; // Link file APK
                 
                 setTimeout(() => {
                     btnDL.classList.remove("loading");
